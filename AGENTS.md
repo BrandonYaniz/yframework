@@ -105,12 +105,31 @@ delegated — are yours to make and record in the completion log.
 - Do not commit changes to `docs/architecture/`; those documents are
   authoritative and read-only.
 
+## Local development database
+
+MariaDB 13.0.2 is installed and running on `127.0.0.1:3306` (Homebrew).
+
+- Database: `devframework`
+- User: `devframework`
+- Password: `YFRAMEWORK_DB_PASSWORD` in `.env.local` (gitignored)
+- Full details: `.codex/STATE/local-environment.md`
+
+Rules:
+
+- Load `.env.local` when a task needs the database. Never hardcode credentials in
+  source, tests, docs, commits, or log output, and never print the password.
+- The `mariadb` client is on `PATH`. Check connectivity with
+  `mariadb -h 127.0.0.1 -u devframework -p devframework -e "SELECT 1"`.
+- Do not drop, truncate, or reset the `devframework` database. Schema-mutating
+  tests create and drop their own objects.
+- Use this server from task 009 onward (connection config) and task 018 onward
+  (migrations, locks, transactions). A separate `devframework_test` database is
+  recommended before task 018 and is not yet created.
+
 ## Known repository facts
 
-- Module path **must** be `github.com/BrandonYaniz/yframework`. `go.mod`
-  currently says `github.com/yanizio/yframework`; task 001 fixes it.
+- Module path is `github.com/BrandonYaniz/yframework` (set correctly by task 001).
 - Go 1.27.3 is installed. `staticcheck` is at `~/Development/Go/bin/staticcheck`.
-- MariaDB/MySQL is **not installed** locally; tasks from 009 onward need it.
 - This repo lives in iCloud Drive. If the file provider stalls a build, pause
   iCloud sync for the directory rather than moving the repo.
 - `.codex/TASKS/008` and `018` contain stray `# Milestone N` headings. They are
