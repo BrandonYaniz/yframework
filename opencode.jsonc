@@ -1,0 +1,61 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // Local Qwen3 Coder 30B served by Ollama at 64k context.
+  "model": "ollama/qwen3-coder:30b-64k",
+
+  "providers": {
+    "ollama": {
+      "models": {
+        "qwen3-coder:30b-64k": {
+          "name": "Qwen3 Coder 30B (64k)",
+          // Ollama advertises the trained 256k window; this machine serves 64k.
+          "limit": {
+            "context": 65536,
+            "output": 8192,
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text"],
+            "output": ["text"],
+          },
+        },
+      },
+    },
+  },
+
+  "permissions": [
+    // Default: ask before running anything.
+    { "action": "shell", "resource": "*", "effect": "ask" },
+
+    // Routine, reversible repository commands.
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "git diff *", "effect": "allow" },
+    { "action": "shell", "resource": "git log *", "effect": "allow" },
+    { "action": "shell", "resource": "git show *", "effect": "allow" },
+    { "action": "shell", "resource": "git add *", "effect": "allow" },
+    { "action": "shell", "resource": "git commit *", "effect": "allow" },
+
+    // Go toolchain and project verification.
+    { "action": "shell", "resource": "go build *", "effect": "allow" },
+    { "action": "shell", "resource": "go test *", "effect": "allow" },
+    { "action": "shell", "resource": "go vet *", "effect": "allow" },
+    { "action": "shell", "resource": "go fmt *", "effect": "allow" },
+    { "action": "shell", "resource": "go list *", "effect": "allow" },
+    { "action": "shell", "resource": "go mod tidy", "effect": "allow" },
+    { "action": "shell", "resource": "gofmt *", "effect": "allow" },
+    { "action": "shell", "resource": "staticcheck *", "effect": "allow" },
+    { "action": "shell", "resource": "./scripts/verify.sh", "effect": "allow" },
+    { "action": "shell", "resource": "python3 scripts/*", "effect": "allow" },
+    { "action": "shell", "resource": "rg *", "effect": "allow" },
+    { "action": "shell", "resource": "ls *", "effect": "allow" },
+    { "action": "shell", "resource": "mkdir -p *", "effect": "allow" },
+
+    // Never without explicit human intervention.
+    { "action": "shell", "resource": "git push *", "effect": "deny" },
+    { "action": "shell", "resource": "git reset --hard *", "effect": "deny" },
+    { "action": "shell", "resource": "git clean *", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf *", "effect": "deny" },
+    { "action": "shell", "resource": "sudo *", "effect": "deny" },
+  ],
+}
