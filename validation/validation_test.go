@@ -80,11 +80,11 @@ func TestValidationErrorsIs(t *testing.T) {
 	errors.Add("username", "must not be empty", "USERNAME_REQUIRED")
 	errors.Add("email", "invalid format", "EMAIL_INVALID")
 
-	if !errors.Is("USERNAME_REQUIRED") {
+	if !errors.HasCode("USERNAME_REQUIRED") {
 		t.Error("Expected to find USERNAME_REQUIRED code")
 	}
 
-	if errors.Is("NON_EXISTENT_CODE") {
+	if errors.HasCode("NON_EXISTENT_CODE") {
 		t.Error("Expected to not find NON_EXISTENT_CODE code")
 	}
 }

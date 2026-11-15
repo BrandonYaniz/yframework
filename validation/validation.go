@@ -71,8 +71,8 @@ func (v *ValidationErrors) Len() int {
 	return len(v.Errors)
 }
 
-// Is checks if any error in the collection matches the specified code.
-func (v *ValidationErrors) Is(code string) bool {
+// HasCode checks if any error in the collection matches the specified code.
+func (v *ValidationErrors) HasCode(code string) bool {
 	for _, err := range v.Errors {
 		if err.Code == code {
 			return true
