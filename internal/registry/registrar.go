@@ -9,13 +9,13 @@ import (
 type Registrar interface {
 	// RegisterComponent registers a component with its dependencies.
 	RegisterComponent(id string, constructor func() interface{}, dependencies ...string) error
-	
+
 	// RegisterService registers a service with its dependencies.
 	RegisterService(id string, constructor func() interface{}, dependencies ...string) error
-	
+
 	// FreezeRegistry prevents further registrations.
 	FreezeRegistry()
-	
+
 	// IsRegistryFrozen returns true if the registry is frozen.
 	IsRegistryFrozen() bool
 }
@@ -37,7 +37,7 @@ func (r *ComponentRegistrar) RegisterComponent(id string, constructor func() int
 	if r.registry.IsFrozen() {
 		return fmt.Errorf("cannot register component in frozen registry")
 	}
-	
+
 	return r.registry.Register(id, constructor, dependencies...)
 }
 
@@ -46,7 +46,7 @@ func (r *ComponentRegistrar) RegisterService(id string, constructor func() inter
 	if r.registry.IsFrozen() {
 		return fmt.Errorf("cannot register service in frozen registry")
 	}
-	
+
 	return r.registry.Register(id, constructor, dependencies...)
 }
 

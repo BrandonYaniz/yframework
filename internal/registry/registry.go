@@ -8,7 +8,7 @@ import (
 
 // Registry manages component registration and dependency resolution.
 type Registry struct {
-	mu       sync.RWMutex
+	mu         sync.RWMutex
 	components map[string]*Component
 }
 
@@ -29,8 +29,8 @@ func (r *Registry) Register(id string, constructor func() interface{}, dependenc
 	}
 
 	r.components[id] = &Component{
-		ID:          id,
-		Constructor: constructor,
+		ID:           id,
+		Constructor:  constructor,
 		Dependencies: dependencies,
 	}
 

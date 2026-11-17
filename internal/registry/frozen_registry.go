@@ -8,8 +8,8 @@ import (
 
 // Component represents a registered component with its dependencies.
 type Component struct {
-	ID          string
-	Constructor func() interface{}
+	ID           string
+	Constructor  func() interface{}
 	Dependencies []string
 }
 
@@ -43,8 +43,8 @@ func (r *FrozenRegistry) Register(id string, constructor func() interface{}, dep
 	}
 
 	r.components[id] = &Component{
-		ID:          id,
-		Constructor: constructor,
+		ID:           id,
+		Constructor:  constructor,
 		Dependencies: dependencies,
 	}
 

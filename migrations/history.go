@@ -2,6 +2,7 @@
 package migrations
 
 import (
+	"context"
 	"database/sql"
 	"time"
 
@@ -30,7 +31,7 @@ func NewHistoryStore(db *sql.DB) *HistoryStore {
 // CreateSchema creates the migration history table if it doesn't exist.
 func (h *HistoryStore) CreateSchema() error {
 	query := `
-	CREATE TABLE IF NOT EXISTS migration_history (
+	CREATE TABLE IF NOT EXISTS framework_migrations (
 		id BIGINT AUTO_INCREMENT PRIMARY KEY,
 		name VARCHAR(255) NOT NULL,
 		version BIGINT NOT NULL,
@@ -41,7 +42,7 @@ func (h *HistoryStore) CreateSchema() error {
 
 	_, err := h.db.Exec(query)
 	if err != nil {
-		return errors.NewWithCause("failed to create migration history schema", "MIGRATION_HISTORY_SCHEMA_CREATE_FAILED", err)
+		return errors.NewWithCause("failed to create migration history table", "MIGRATION_HISTORY_CREATE_SCHEMA_FAILED", err)
 	}
 
 	return nil
@@ -49,7 +50,7 @@ func (h *HistoryStore) CreateSchema() error {
 
 // GetAppliedMigrations returns all applied migrations.
 func (h *HistoryStore) GetAppliedMigrations() ([]MigrationHistory, error) {
-	query := `SELECT id, name, version, checksum, applied_at FROM migration_history ORDER BY version, id`
+	query := `SELECT id, name, version, checksum, applied_at FROM framework_migrations ORDER BY version, id`
 
 	rows, err := h.db.Query(query)
 	if err != nil {
@@ -73,9 +74,14 @@ func (h *HistoryStore) GetAppliedMigrations() ([]MigrationHistory, error) {
 	return migrations, nil
 }
 
+// ListApplied returns all applied migrations (alias for GetAppliedMigrations).
+func (h *HistoryStore) ListApplied(ctx context.Context) ([]MigrationHistory, error) {
+	return h.GetAppliedMigrations()
+}
+
 // MarkMigrationApplied records a migration as applied in the history.
 func (h *HistoryStore) MarkMigrationApplied(name string, version int64, checksum string) error {
-	query := `INSERT INTO migration_history (name, version, checksum) VALUES (?, ?, ?)`
+	query := `INSERT INTO framework_migrations (name, version, checksum) VALUES (?, ?, ?)`
 
 	_, err := h.db.Exec(query, name, version, checksum)
 	if err != nil {
@@ -87,7 +93,7 @@ func (h *HistoryStore) MarkMigrationApplied(name string, version int64, checksum
 
 // MarkMigrationRolledBack removes a migration from the history.
 func (h *HistoryStore) MarkMigrationRolledBack(name string, version int64) error {
-	query := `DELETE FROM migration_history WHERE name = ? AND version = ?`
+	query := `DELETE FROM framework_migrations WHERE name = ? AND version = ?`
 
 	_, err := h.db.Exec(query, name, version)
 	if err != nil {

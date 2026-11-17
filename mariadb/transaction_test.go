@@ -9,14 +9,10 @@ import (
 )
 
 func TestTransactionHelper_ExecuteInTransaction(t *testing.T) {
-	// This is a basic test structure - in a real implementation,
-	// we would need an actual database connection for complete testing
 	t.Run("ExecuteInTransaction executes function successfully", func(t *testing.T) {
-		// We can't fully test this without a real DB connection, but we can at least
-		// test that the structure works
+		// Test with nil DB - should not panic, just return an error
 		helper := &TransactionHelper{}
 
-		// Test with nil DB - should not panic
 		ctx := context.Background()
 		err := helper.ExecuteInTransaction(ctx, func(tx *sql.Tx) error {
 			return nil

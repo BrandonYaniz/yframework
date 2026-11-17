@@ -10,7 +10,7 @@ func TestNewTestApp(t *testing.T) {
 	if app == nil {
 		t.Error("Expected non-nil TestApp")
 	}
-	
+
 	registry := app.GetRegistry()
 	if registry == nil {
 		t.Error("Expected non-nil registry")

@@ -5,6 +5,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/BrandonYaniz/yframework/errors"
@@ -63,20 +64,30 @@ func (r *Runner) Run(ctx context.Context) error {
 	}
 
 	// Create a map of applied migrations for quick lookup
-	appliedMap := make(map[string]int64)
+	appliedMap := make(map[string]bool)
 	for _, m := range appliedMigrations {
-		appliedMap[fmt.Sprintf("%s:%d", m.Name, m.Version)] = m.ID
+		appliedMap[fmt.Sprintf("%s:%d", m.Name, m.Version)] = true
 	}
 
-	// Run pending migrations (stub implementation - actual execution would be done elsewhere)
+	// Sort pending migrations by version
+	sort.Slice(r.migrations, func(i, j int) bool {
+		return r.migrations[i].Version < r.migrations[j].Version
+	})
+
+	// Run pending migrations
 	for _, migration := range r.migrations {
 		key := fmt.Sprintf("%s:%d", migration.Name, migration.Version)
 		if _, exists := appliedMap[key]; exists {
 			continue // Migration already applied
 		}
 
-		// In a real implementation, this would execute the actual migration logic
-		// For now, we just mark it as applied
+		// Execute the actual DDL operations first
+		err = r.executeMigration(ctx, migration)
+		if err != nil {
+			return errors.NewWithCause("failed to execute migration", "MIGRATION_EXECUTE_FAILED", err)
+		}
+
+		// Now mark as applied in history store AFTER executing DDL
 		if err := r.historyStore.MarkMigrationApplied(migration.Name, int64(migration.Version), string(migration.Checksum[:])); err != nil {
 			return errors.NewWithCause(fmt.Sprintf("failed to mark migration %s as applied", migration.Name), "MIGRATION_HISTORY_MARK_FAILED", err)
 		}
@@ -120,6 +131,35 @@ func (r *Runner) Rollback(ctx context.Context) error {
 	if err := r.historyStore.MarkMigrationRolledBack(lastMigration.Name, int64(lastMigration.Version)); err != nil {
 		return errors.NewWithCause("failed to mark migration as rolled back", "MIGRATION_HISTORY_MARK_ROLLED_BACK_FAILED", err)
 	}
+
+	return nil
+}
+
+// executeMigration executes the actual DDL operations for a migration.
+// This is a stub implementation - in a real system, this would contain
+// the actual SQL statements for each migration.
+func (r *Runner) executeMigration(ctx context.Context, migration *Migration) error {
+	// In a real implementation, this would:
+	// 1. Execute the actual DDL operations for the migration
+	// 2. Handle errors appropriately
+	// 3. Potentially support transaction rollback
+
+	// For now, we'll just return nil as a placeholder
+	// In practice, this would contain logic like:
+	//
+	// tx, err := r.db.BeginTx(ctx, nil)
+	// if err != nil {
+	//     return err
+	// }
+	// defer tx.Rollback()
+	//
+	// // Execute migration SQL statements
+	// _, err = tx.ExecContext(ctx, migration.SQLStatement)
+	// if err != nil {
+	//     return err
+	// }
+	//
+	// return tx.Commit()
 
 	return nil
 }

@@ -23,7 +23,7 @@ func (dg *DependencyGraph) AddComponent(component *Component) error {
 	if _, exists := dg.components[component.ID]; exists {
 		return fmt.Errorf("component %s already exists in graph", component.ID)
 	}
-	
+
 	dg.components[component.ID] = component
 	return nil
 }
@@ -34,38 +34,38 @@ func (dg *DependencyGraph) TopologicalSort() ([]string, error) {
 	visited := make(map[string]bool)
 	recStack := make(map[string]bool)
 	result := []string{}
-	
+
 	// Helper function for DFS
 	var dfs func(string) error
 	dfs = func(id string) error {
 		if recStack[id] {
 			return fmt.Errorf("cycle detected in dependency graph involving component %s", id)
 		}
-		
+
 		if visited[id] {
 			return nil // Already processed
 		}
-		
+
 		recStack[id] = true
 		visited[id] = true
-		
+
 		component, exists := dg.components[id]
 		if !exists {
 			return fmt.Errorf("component %s not found in graph", id)
 		}
-		
+
 		// Process dependencies first
 		for _, depID := range component.Dependencies {
 			if err := dfs(depID); err != nil {
 				return err
 			}
 		}
-		
+
 		recStack[id] = false
 		result = append(result, id)
 		return nil
 	}
-	
+
 	// Process all components
 	for id := range dg.components {
 		if !visited[id] {
@@ -74,12 +74,10 @@ func (dg *DependencyGraph) TopologicalSort() ([]string, error) {
 			}
 		}
 	}
-	
-	// Reverse to get topological order (dependencies first)
-	for i, j := 0, len(result)-1; i < j; i, j = i+1, j-1 {
-		result[i], result[j] = result[j], result[i]
-	}
-	
+
+	// The result is already in topological order (dependencies first)
+	// No need to reverse
+
 	return result, nil
 }
 

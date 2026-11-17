@@ -32,10 +32,10 @@ func (ab *ApplicationBuilder) RegisterService(id string, constructor func() inte
 func (ab *ApplicationBuilder) Build() (*Application, error) {
 	// Validate that all dependencies can be resolved
 	// In a real implementation, this would check for cycles and missing dependencies
-	
+
 	// Freeze the registry to prevent further modifications
 	ab.registrar.FreezeRegistry()
-	
+
 	return &Application{
 		registrar: ab.registrar,
 	}, nil
@@ -67,6 +67,6 @@ func (ab *ApplicationBuilder) ValidateComposition() error {
 	// - All dependencies exist
 	// - No duplicate registrations
 	// - Valid component configurations
-	
+
 	return nil
 }

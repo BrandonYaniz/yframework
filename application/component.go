@@ -9,7 +9,7 @@ import (
 type ComponentID struct {
 	// Name is the unique name of the component.
 	Name string
-	
+
 	// Version is the semantic version of the component.
 	Version string
 }
