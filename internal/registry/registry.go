@@ -6,13 +6,6 @@ import (
 	"sync"
 )
 
-// Component represents a registered component with its dependencies.
-type Component struct {
-	ID          string
-	Constructor func() interface{}
-	Dependencies []string
-}
-
 // Registry manages component registration and dependency resolution.
 type Registry struct {
 	mu       sync.RWMutex

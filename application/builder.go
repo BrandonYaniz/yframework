@@ -2,8 +2,6 @@
 package application
 
 import (
-	"fmt"
-	
 	"github.com/BrandonYaniz/yframework/internal/registry"
 )
 
