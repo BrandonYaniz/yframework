@@ -3,8 +3,8 @@ package migrations
 import (
 	"testing"
 
-	"github.com/BrandonYaniz/yframework/mariadb"
 	"github.com/BrandonYaniz/yframework/config"
+	"github.com/BrandonYaniz/yframework/mariadb"
 )
 
 // Integration tests for MariaDB migration suite
@@ -21,7 +21,7 @@ func TestMigrationFromZero(t *testing.T) {
 	// 4. Verify all expected tables and schema are created
 
 	t.Log("Migration from zero test - placeholder for full implementation")
-	
+
 	// Check if we can at least load the configuration
 	_, err := mariadb.LoadConfig(&config.Config{})
 	if err != nil {
@@ -42,7 +42,7 @@ func TestConcurrentMigration(t *testing.T) {
 	// 4. Verify that no race conditions occur
 
 	t.Log("Concurrent migration test - placeholder for full implementation")
-	
+
 	// Check if we can at least load the configuration
 	_, err := mariadb.LoadConfig(&config.Config{})
 	if err != nil {
@@ -63,7 +63,7 @@ func TestChecksumDrift(t *testing.T) {
 	// 4. Ensure proper error handling for checksum mismatches
 
 	t.Log("Checksum drift test - placeholder for full implementation")
-	
+
 	// Check if we can at least load the configuration
 	_, err := mariadb.LoadConfig(&config.Config{})
 	if err != nil {
@@ -83,7 +83,7 @@ func TestUnsupportedDBBehavior(t *testing.T) {
 	// 3. Ensure that migration system properly identifies and rejects unsupported DB types
 
 	t.Log("Unsupported DB behavior test - placeholder for full implementation")
-	
+
 	// Check if we can at least load the configuration
 	_, err := mariadb.LoadConfig(&config.Config{})
 	if err != nil {
@@ -125,7 +125,7 @@ func TestMigrationRunnerIntegration(t *testing.T) {
 	// 5. Check version table is updated properly
 
 	t.Log("Migration runner integration test - placeholder for full implementation")
-	
+
 	// Check if we can at least load the configuration
 	_, err := mariadb.LoadConfig(&config.Config{})
 	if err != nil {
